@@ -1,0 +1,19 @@
+# 生产环境
+production:
+  user: fund
+  password: 123456
+  host: cdb-p3ccshwm.cd.tencentcdb.com
+  port: 10053
+  database: fund_filter_production
+
+# 测试环境
+development:
+  user: fund
+  password: 123456
+  host: cdb-p3ccshwm.cd.tencentcdb.com
+  port: 10053
+  database: fund_filter_test
+
+# 输出环境
+mode:
+  production
