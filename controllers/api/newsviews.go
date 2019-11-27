@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewsViews(c *gin.Context){
+func NewsViews(c *gin.Context) {
 	var news models.News
 	var ret []models.News
 	var count, pageNumber int64
@@ -16,7 +16,7 @@ func NewsViews(c *gin.Context){
 	pageNumber = 25
 	databases.DB.Model(&news).Count(&count)
 
-	databases.DB.Offset(pageNumber*page).Find(&ret).Limit(pageNumber)
+	databases.DB.Offset(pageNumber * page).Limit(pageNumber).Find(&ret)
 	c.JSON(200, gin.H{
 		"total": count, "per_page": pageNumber, "data": ret,
 	})

@@ -7,6 +7,9 @@ type News struct {
 	Url      string `gorm:"column:url" json:"url"`
 	Source   string `gorm:"column:source" json:"source"`
 	Keyword  string `gorm:"column:keyword" json:"keyword"`
-	SaveDate string `gorm:"column:savedate" json:"savedate"`
+	SaveDate string `gorm:"column:savedate;type:datetime" json:"savedate"`
 }
 
+func (n *News) AfterFind() {
+	n.SaveDate = n.SaveDate[:10]
+}
