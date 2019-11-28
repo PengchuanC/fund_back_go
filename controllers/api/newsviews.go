@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fund_back_go/databases"
+	"fund_back_go/database"
 	"fund_back_go/models"
 	"fund_back_go/util"
 	"github.com/gin-gonic/gin"
@@ -15,6 +15,12 @@ import (
 **@param date: 请求的日期
 **@param search: 请求附带关键字，按关键字检索
  */
+
+/*
+**新闻首页
+**Method: GET
+**Route: /breaking
+ */
 func NewsViews(c *gin.Context) {
 	var news models.News
 	var ret []models.News
@@ -22,11 +28,11 @@ func NewsViews(c *gin.Context) {
 
 	page := util.ConvertStr2Int(c.DefaultQuery("page", "1"))
 	pageNumber = 25
-	databases.DB.Model(&news).Count(&count)
+	database.DB.Model(&news).Count(&count)
 
-	databases.DB.Offset(pageNumber * page).Limit(pageNumber).Find(&ret)
+	database.DB.Offset(pageNumber * page).Limit(pageNumber).Find(&ret)
 	c.JSON(200, gin.H{
-		"total": count, "per_page": pageNumber, "data": ret,
+		"total": count, "per_page": pageNumber, "data": ret, "page": page,
 	})
 }
 
@@ -42,7 +48,7 @@ func NewsList(c *gin.Context) {
 
 	var news models.News
 	var ret []models.News
-	db := databases.DB
+	db := database.DB
 
 	if section != "" {
 		db = db.Where("keyword = ?", section)
@@ -60,6 +66,49 @@ func NewsList(c *gin.Context) {
 	db.Model(&news).Count(&count)
 	db.Offset(pageNumber * _page).Limit(pageNumber).Find(&ret)
 	c.JSON(http.StatusOK, gin.H{
-		"total": count, "per_page": pageNumber, "data": ret,
+		"total": count, "per_page": pageNumber, "data": ret, "page": _page,
 	})
+}
+
+/*
+**Method: POST
+**Route: /follow
+ */
+func Follow(c *gin.Context) {
+	keyword := c.Query("keyword")
+	page := c.DefaultQuery("page", "1")
+
+	_page := util.ConvertStr2Int(page)
+
+	var news models.News
+	var ret []models.News
+	var pageNum, count int64
+	pageNum = 25
+
+	db := database.DB
+	db = db.Where(models.News{Keyword: keyword})
+	db.Model(&news).Count(&count)
+	db.Offset(_page * pageNum).Limit(pageNum).Find(&ret)
+	c.JSON(http.StatusOK, gin.H{
+		"total": count, "per_page": pageNum, "data": ret, "page": _page,
+	})
+}
+
+/*
+**Method: POST
+**Route: /follow/keywords
+ */
+func FollowKeyword(c *gin.Context) {
+	type Keyword struct {
+		Keyword string
+	}
+	var ret []Keyword
+	db := database.DB
+	db.Table("t_ff_news").Select("distinct(keyword) as keyword").Where("keyword is not null").Scan(&ret)
+
+	var data []string
+	for _, key := range ret {
+		data = append(data, key.Keyword)
+	}
+	c.JSON(http.StatusOK, gin.H{"data": data})
 }

@@ -7,5 +7,7 @@ func init() {
 	{
 		news.GET("/", api.NewsViews)
 		news.GET("/newslist", api.NewsList)
+		news.POST("/follow", api.Follow)
+		news.Any("/follow/keywords", api.FollowKeyword)
 	}
 }
