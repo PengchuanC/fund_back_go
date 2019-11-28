@@ -1,0 +1,28 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+GET http://localhost:5000/api/v1/news/newslist?page=2&section=金融&date=2019-12-27
+Accept: application/json
+
+###
+
+POST http://106.54.134.39:8000/api/v1/news/newslist
+Content-Type: application/json
+
+{
+  "page": 1,
+  "section": "宏观",
+  "date": null,
+  "search": null
+}
+
+###
+GET http://106.54.134.39:8000/api/v1/news/newslist?page=2&section=金融
+Accept: application/json
+
+###
